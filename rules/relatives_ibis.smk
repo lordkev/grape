@@ -17,7 +17,7 @@ rule split_for_ibis:
         chr = lambda wildcards: wildcards.chrom
     shell:
         """
-            plink --bfile {params.bfile} --chr {params.chr} --make-bed --out ibis_data/{params.chr} --threads {threads}
+            plink --bfile {params.bfile} --chr {params.chr} --make-bed --output-chr M --out ibis_data/{params.chr} --threads {threads}
         """
 
 
@@ -130,7 +130,7 @@ rule ersa:
         r = '--nomask ' + '-r ' + str(config['ersa_r']) if config.get('weight_mask') else ''
     shell:
         """
-        zcat {input.ibd} > {output.ibd}
+        zcat {input.ibd} | grep -v X > {output.ibd}
         ersa --avuncular-adj -ci -a {params.a} --dmax 14 -t {params.t} -l {params.l} \
                 {params.r} -th {params.th} {output.ibd} -o {output.relatives} |& tee {log}
         """
@@ -159,10 +159,19 @@ rule merge_ersa:
         done
         """
 
-
+rule remove_X_bef_postprocess:
+    input:
+        ibd = rules.merge_ibis_segments.output.ibd
+    output:
+        ibd = temp("ibis/merged_ibis.noX.seg")
+    shell:
+        """
+        cat {input.ibd} | grep -v X > {output.ibd}
+        """
+ 
 rule postprocess_ersa:
     input:
-        ibd=rules.merge_ibis_segments.output.ibd,
+        ibd=rules.remove_X_bef_postprocess.output.ibd,
         ersa=rules.merge_ersa.output[0]
     params:
         ibis = True

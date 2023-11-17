@@ -133,7 +133,7 @@ rule prepare_vcf:
         bcftools sort -T vcf/temp_{wildcards.batch} vcf/{wildcards.batch}_merged_mapped_clean.vcf.gz -O z -o {output.temp_vcf} |& tee -a {log.vcf}
         bcftools index -f {output.temp_vcf} |& tee -a {log.vcf}
         # need to check output for the potential issues
-        bcftools view {output.temp_vcf} --regions 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22 -O b -o {output.bcf}
+        bcftools view {output.temp_vcf} --regions 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,X -O b -o {output.bcf}
         bcftools norm --check-ref e -f {GRCH37_FASTA} vcf/{wildcards.batch}_merged_mapped_sorted.bcf.gz -O u -o /dev/null |& tee -a {log.vcf}
         bcftools index -f {output.bcf} | tee -a {log.vcf}
         """

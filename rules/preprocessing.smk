@@ -200,7 +200,7 @@ if not flow == 'rapid':
                     fi
                 done
 
-                plink --merge-list files_list.txt --make-bed --out preprocessed/data
+                plink --merge-list files_list.txt --make-bed --output-chr M --impute-sex 0.85 0.86 --out preprocessed/data
                 rm files_list.txt
                 '''
 
@@ -264,7 +264,8 @@ if not flow == 'rapid':
                 'benchmarks/plink/convert_mapped_to_plink_batch1.txt'
             shell:
                 '''
-                plink --vcf {input} --make-bed --out {params.out} |& tee {log}
+                plink --vcf {input} --make-bed --output-chr M --impute-sex 0.85 0.86 --out {params.out} |& tee {log}
+		sed -i 's/0 -9/2 -9/' {params.out}.fam
                 '''
 
 
