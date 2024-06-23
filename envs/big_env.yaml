@@ -7,7 +7,7 @@ channels:
   - alex_genxt
   - defaults
 dependencies:
-  - python>=3.9
+  - python==3.10
   - matplotlib
   - pandas
   - numpy
@@ -34,10 +34,10 @@ dependencies:
   - scikit-allel
   - scikit-learn
   - king
-  - snakemake
+  - snakemake==7.31.0
   - pip
   - pip:
-    - polars
+    - polars==0.19.1
     - pydot
     - "--editable=git+https://github.com/alex-medvedev-msc/ersa.git#egg=ersa"
   # - pip:

@@ -127,6 +127,7 @@ if __name__ == '__main__':
     
     #logging.info(f'ibd shape: {ibd.shape[0]}, ersa shape: {ersa.shape[0]}')
     relatives = ibd.join(ersa, how='outer', on=['id1', 'id2'])  # No left_index / right_index input params
+    print(relatives.collect(streaming=True).head(5))
 
     # It is impossible to have more than 50% of ibd2 segments unless you are monozygotic twins or duplicates.
     GENOME_CM_LEN = 3400
@@ -151,11 +152,11 @@ if __name__ == '__main__':
         .alias('final_degree'),
 
         pl.when(dup_mask)
-        .then('MZ/Dup')
+        .then(pl.lit('MZ/Dup'))
         .when(fs_mask)
-        .then('FS')
+        .then(pl.lit('FS'))
         .when(po_mask)
-        .then('PO')
+        .then(pl.lit('PO'))
         #.when((pl.col('ersa_degree') == 1)) # when ersa_degree is 1 but PO mask does not tell us that it is PO
         #.then('FS')
         .otherwise(pl.col('ersa_degree'))
